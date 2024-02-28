@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 def connect_db(app):
     """Connect to database."""
     app.app_context().push()
     db.app = app
     db.init_app(app)
+
 
 class User(db.Model):
     """User model"""
@@ -16,21 +18,21 @@ class User(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key = True,
-        autoincrement = True)
+        primary_key=True,
+        autoincrement=True)
 
     first_name = db.Column(
         db.String(50),
-        nullable = False
+        nullable=False
     )
 
     last_name = db.Column(
         db.String(50),
-        nullable = False
+        nullable=False
     )
 
     image_url = db.Column(
-        db.String(200),
-        nullable = False,
-        default = ''
+        db.Text,
+        nullable=False,
+        default=''
     )
