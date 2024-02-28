@@ -4,11 +4,14 @@
 
 {% block content%}
 
-<h1>Users</h1>
+<h1 class="text-center">Users</h1>
 
-<ul>
+<ul class="text-center list-group">
   {% for user in users %}
-  <li> <a href="/users/{{ user.id }}">{{user.first_name}} {{user.last_name}}</a></li>
+  <li  class="list-group-item"> <a href="/users/{{ user.id }}">
+    {{user.first_name}} {{user.last_name}}
+  </a></li>
+
   {% endfor %}
 </ul>
 
