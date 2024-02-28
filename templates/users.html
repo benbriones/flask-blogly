@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content%}
+
+<h1>Users</h1>
+
+<ul>
+  {% for user in users %}
+  <li> <a href="/users/{{ user.id }}">{{user.first_name}} {{user.last_name}}</a></li>
+  {% endfor %}
+</ul>
+
+<!-- leads to make new user page, update href -->
+<a class = 'btn btn-primary' href="" role = "button"></a>
+
+{% endblock %}
