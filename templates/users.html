@@ -9,7 +9,7 @@
 <ul class="text-center list-group">
   {% for user in users %}
   <li  class="list-group-item"> <a href="/users/{{ user.id }}">
-    {{user.first_name}} {{user.last_name}}
+    {{User.first_name}} {{User.last_name}}
   </a></li>
 
   {% endfor %}
