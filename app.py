@@ -3,7 +3,7 @@
 import os
 
 from flask import Flask, render_template, redirect, request
-from models import db, connect_db, User
+from models import db, connect_db, User, DEFAULT_IMAGE_URL
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -51,6 +51,8 @@ def create_user():
     last_name = request.form['last_name']
     image_url = request.form.get('image_url', None)
 
+    print(f"**********************{image_url}")
+
     user = User(first_name=first_name,
                 last_name=last_name,
                 image_url=image_url)
@@ -84,8 +86,8 @@ def process_edit(user_id):
     """Process edit form, redirect to users"""
     user = User.query.get_or_404(user_id)
 
-    first_name = request.form.get('first_name', None)
-    last_name = request.form.get('last_name', None)
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
     image_url = request.form.get('image_url', None)
 
     user.first_name = first_name
