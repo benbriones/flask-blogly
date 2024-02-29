@@ -98,7 +98,8 @@ def process_edit(user_id):
 
 @app.post('/users/<int:user_id>/delete')
 def delete_user(user_id):
-    """ deletes the user selected"""
+    """deletes the user selected"""
+
     User.query.filter(User.id == user_id).delete()
     db.session.commit()
     return redirect('/users')

@@ -1,11 +1,13 @@
-import os
 
+import os
 os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 
-from unittest import TestCase
 
+from unittest import TestCase
 from app import app, db
 from models import User
+
+
 
 # DEFAULT_IMAGE
 
@@ -39,7 +41,7 @@ class UserViewTestCase(TestCase):
         test_user = User(
             first_name="test1_first",
             last_name="test1_last",
-            id = 1,
+            id=1,
             image_url=None,
         )
 
@@ -66,16 +68,43 @@ class UserViewTestCase(TestCase):
             self.assertIn("test1_last", html)
 
     def test_new_user(self):
-
         """test redirect, check if username edited"""
         with app.test_client() as c:
 
-
-            resp = c.post(f"/users/{self.user_id}/edit", data = { 'first_name': 'Ben',
-                       'last_name': 'Last',
-                       'image_url': 'literally_anything'},
-                       follow_redirects = True)
+            resp = c.post(f"/users/{self.user_id}/edit",
+                          data={'first_name': 'Ben',
+                                'last_name': 'Last',
+                                'image_url': 'literally_anything'},
+                          follow_redirects=True)
 
             html = resp.get_data(as_text=True)
 
             self.assertIn('Ben Last', html)
+
+    def test_user_info(self):
+        """tests for user info on their page"""
+
+        with app.test_client() as client:
+            response = client.get(f'/users/{self.user_id}')
+            html = response.get_data(as_text=True)
+
+            self.assertIn("test1_first", html)
+            self.assertIn("test1_last", html)
+
+    def test_user_edit(self):
+        """tests for edit info on their page"""
+
+        with app.test_client() as client:
+            response = client.get(f'/users/{self.user_id}/edit')
+            html = response.get_data(as_text=True)
+
+            self.assertIn("<h1> Edit a user</h1>", html)
+
+    def test_user_new(self):
+        """tests for new user page"""
+
+        with app.test_client() as client:
+            response = client.get('/users/new')
+            html = response.get_data(as_text=True)
+
+            self.assertIn("<h1> Create a User</h1>", html)
