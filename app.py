@@ -3,7 +3,7 @@
 import os
 
 from flask import Flask, render_template, redirect, request
-from models import db, connect_db, User, DEFAULT_IMAGE_URL
+from models import db, connect_db, Post, User, DEFAULT_IMAGE_URL
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 connect_db(app)
 db.create_all()
 
-
+""" USER routes"""
 @app.get('/')
 def home_page():
     """"index"""
@@ -104,3 +104,38 @@ def delete_user(user_id):
     User.query.filter(User.id == user_id).delete()
     db.session.commit()
     return redirect('/users')
+
+
+""" POST routes"""
+@app.get('/users/<int:user_id>/posts/new')
+def show_add_post_form(user_id):
+    """displays the add post form """
+    user = User.query.get_or_404(user_id)
+
+    return render_template("new_post_form.html", user=user)
+
+#TODO: add new post is not redirecting, taking us to button url
+
+@app.post('/users/<int:user_id>/posts/new')
+def process_add_post_form(user_id):
+    """retrieves post form values, redirects to user details"""
+    title = request.form.get('title')
+    content = request.form.get('content')
+
+    post = Post(title = title, content = content, user_id = user_id)
+
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}')
+
+@app.get('/posts/<int:post_id>')
+def show_post(post_id):
+    """shows a post, allows for editing and deleting a post"""
+    post = Post.query.get_or_404(post_id)
+    user = User.query.get_or_404(post.user_id)
+
+    return render_template('new_post_form.html', user = user, post = post)
+
+
+

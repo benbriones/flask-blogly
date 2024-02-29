@@ -24,7 +24,7 @@
 </form>
 
 <!-- FIXME: -->
-{% for post in posts %}
+{% for post in user.posts %}
 <ul class="user-post-list">
   <li> <a href="/posts/{{post.id}}"> {{post.title}}</a></li>
 </ul>
