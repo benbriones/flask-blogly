@@ -36,7 +36,12 @@ def show_user():
     return render_template('users.html', users=data)
 
 
-# @app.get('/users/new')
+@app.get('/users/new')
+def new_user_form():
+    """form for new users"""
+
+    return render_template('new_user_form.html')
+
 
 @app.post('/users/new')
 def create_user():
@@ -53,9 +58,26 @@ def create_user():
     db.session.add(user)
     db.session.commit()
 
-# @app.get('/users/[user-id]')
+    return redirect('/users')
 
-# @app.get('/users/[user-id]/edit')
+
+@app.get('/users/<int:user_id>')
+def users_post(user_id):
+    """users personal listing"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template('user_detail.html', user=user)
+
+
+@app.get('/users/<int:user_id>/edit')
+def edit_user(user_id):
+    """edits current user page"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template('edit_user.html', user=user)
+
 
 # @app.post('/users/[user-id]/edit')
 
