@@ -8,23 +8,22 @@
 {% block content %}
 
 {% if user.image_url %}
-<img src="{{ user.image_url }}" alt="Profile-Image">
+<img class="img-thumbnail d-inline rounded" src="{{ user.image_url }}" alt="Profile-Image">
 {% else %}
-<img src="https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg" alt="Profile-Image">
+<img class="img-thumbnail d-inline rounded" src="https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg" alt="Profile-Image">
 {% endif %}
 
 
-<h1>USER: {{user.first_name}} {{user.last_name}}</h1>
+<h1>{{user.first_name}} {{user.last_name}}</h1>
 
 <form action=""></form>
 
 
-<!-- users edit -->
-<a href="/users/{{user.id}}/edit" class="btn">Edit</a>
+<a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
 
 
 
-<form action="/users/{{user.id}}/delete" method="POST">
+<form class = "d-inline" action="/users/{{user.id}}/delete" method="POST">
   <button type="submit" class="btn btn-danger">Delete</button>
 </form>
 
