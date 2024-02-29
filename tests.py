@@ -5,13 +5,15 @@ os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 from unittest import TestCase
 
 from app import app, db
-from models import DEFAULT_IMAGE_URL, User
+from models import User
+
+# DEFAULT_IMAGE
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
 
 # This is a bit of hack, but don't use Flask DebugToolbar
-app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
+# app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 
 # Create our tables (we do this here, so we only create the tables
 # once for all tests --- in each test, we'll delete the data
@@ -37,6 +39,7 @@ class UserViewTestCase(TestCase):
         test_user = User(
             first_name="test1_first",
             last_name="test1_last",
+            id = 1,
             image_url=None,
         )
 
@@ -61,3 +64,18 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
+
+    def test_new_user(self):
+
+        """test redirect, check if username edited"""
+        with app.test_client() as c:
+
+
+            resp = c.post(f"/users/{self.user_id}/edit", data = { 'first_name': 'Ben',
+                       'last_name': 'Last',
+                       'image_url': 'literally_anything'},
+                       follow_redirects = True)
+
+            html = resp.get_data(as_text=True)
+
+            self.assertIn('Ben Last', html)

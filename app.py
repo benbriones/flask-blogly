@@ -8,7 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret"
-debug = DebugToolbarExtension(app)
+# debug = DebugToolbarExtension(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", 'postgresql:///blogly')
@@ -79,6 +79,26 @@ def edit_user(user_id):
     return render_template('edit_user.html', user=user)
 
 
-# @app.post('/users/[user-id]/edit')
+@app.post('/users/<int:user_id>/edit')
+def process_edit(user_id):
+    """Process edit form, redirect to users"""
+    user = User.query.get_or_404(user_id)
 
-# @app.post('/users/[user-id]/delete')
+    first_name = request.form.get('first_name', None)
+    last_name = request.form.get('last_name', None)
+    image_url = request.form.get('image_url', None)
+
+    user.first_name = first_name
+    user.last_name = last_name
+    user.image_url = image_url
+
+    db.session.commit()
+    return redirect('/users')
+
+
+@app.post('/users/<int:user_id>/delete')
+def delete_user(user_id):
+    """ deletes the user selected"""
+    User.query.filter(User.id == user_id).delete()
+    db.session.commit()
+    return redirect('/users')
