@@ -7,6 +7,7 @@
 <h1> Edit a user</h1>
 
 <!-- will go to some route -->
+<!-- TODO: add IDs on forms to link -->
 <form action="" method="POST">
 
   <label class="form-label" for="first_name">First Name</label>
@@ -19,7 +20,9 @@
   <input class="form-control" type="text" name="image_url" value="{{user.image_url}}">>
 
   <a href="/users/{{user.id}}" class="btn">Cancel</a>
-  <button type="submit" class='btn btn-success'>Save</button>
+  <div class="button-class-div">
+    <button type="submit" class='btn btn-success'>Save</button>
+  </div>
 
 </form>
 

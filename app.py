@@ -30,7 +30,8 @@ def home_page():
 @app.get('/users')
 def show_user():
     """show users listings."""
-
+    # TODO:change data name to something plural and more specific
+    # maybe order by first name, filter/order by last and first names.
     data = User.query.all()
 
     return render_template('users.html', users=data)
@@ -49,9 +50,7 @@ def create_user():
 
     first_name = request.form['first_name']
     last_name = request.form['last_name']
-    image_url = request.form.get('image_url', None)
-
-    print(f"**********************{image_url}")
+    image_url = request.form.get('image_url') or None
 
     user = User(first_name=first_name,
                 last_name=last_name,

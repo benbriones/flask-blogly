@@ -64,7 +64,7 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
-
+    # TODO: update function name
     def test_new_user(self):
         """test redirect, check if username edited"""
         with app.test_client() as c:
@@ -89,6 +89,7 @@ class UserViewTestCase(TestCase):
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
 
+    # TODO:see user's info -- first and last name
     def test_user_edit(self):
         """tests for edit info on their page"""
 
@@ -98,7 +99,7 @@ class UserViewTestCase(TestCase):
 
             self.assertIn("<h1> Edit a user</h1>", html)
 
-    def test_user_new(self):
+    def test_user_create(self):
         """tests for new user page"""
 
         with app.test_client() as client:

@@ -1,9 +1,13 @@
 """Models for Blogly."""
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import DateTime
+
+from sqlalchemy.sql import func
 
 db = SQLAlchemy()
 
 DEFAULT_IMAGE_URL = '/static/default_pic.jpg'
+
 def connect_db(app):
     """Connect to database."""
     app.app_context().push()
@@ -32,7 +36,48 @@ class User(db.Model):
     )
 
     image_url = db.Column(
-        db.String(100),
+        db.Text,
         nullable=False,
-        default = '/static/default_pic.jpg'
+        default = DEFAULT_IMAGE_URL
     )
+
+
+class Post(db.Model):
+    """Post model"""
+
+    __tablename__ = "posts"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    title = db.Column(
+        db.String(100),
+        nullable=False
+    )
+
+    content = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default = func.current_timestamp(),
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False
+    )
+
+    users = db.relationship('User', backref = 'posts')
+
+
+
+
+

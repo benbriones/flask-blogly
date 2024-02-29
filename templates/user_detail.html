@@ -7,21 +7,33 @@
 
 {% block content %}
 
-
-<img src="{{ user.image_url }}" alt="Profile-Image">
+<div class="image-container">
+  <img src="{{ user.image_url }}" alt="Profile-Image">
+</div>
 <h1>USER: {{user.first_name}} {{user.last_name}}</h1>
 
 <form action=""></form>
 
 
-<!-- users edit -->
-<a href="/users/{{user.id}}/edit" class="btn">Edit</a>
-
-
-
-<form action="/users/{{user.id}}/delete" method = "POST">
-  <button type="submit" class="btn btn-danger">Delete</button>
+<form>
+  <div class="button-class-div">
+    <button type="submit" class="btn btn-warning" formaction="/users/{{user.id}}/edit" formmethod="GET">Edit</button>
+    <button type="submit" class="btn btn-danger" formaction="/users/{{user.id}}/delete"
+      formmethod="POST">Delete</button>
+  </div>
 </form>
 
+<!-- FIXME: -->
+{% for post in posts %}
+<ul class="user-post-list">
+  <li> <a href="/posts/{{post.id}}"> {{post.title}}</a></li>
+</ul>
+{% endfor %}
+<form action="">
+  <div class="button-class-div">
+    <button type="submit" class="btn btn-success" formaction="/users/{{user.id}}/posts/new" formmethod="GET">Add
+      post</button>
+  </div>
+</form>
 
 {% endblock %}
