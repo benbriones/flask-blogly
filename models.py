@@ -4,6 +4,7 @@ from sqlalchemy import DateTime
 
 from sqlalchemy.sql import func
 
+DEFAULT_IMAGE_URL = 'https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg'
 db = SQLAlchemy()
 
 DEFAULT_IMAGE_URL = '/static/default_pic.jpg'
