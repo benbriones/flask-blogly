@@ -21,6 +21,8 @@ connect_db(app)
 db.create_all()
 
 """ USER routes"""
+
+
 @app.get('/')
 def home_page():
     """"index"""
@@ -98,22 +100,25 @@ def process_edit(user_id):
 
 @app.post('/users/<int:user_id>/delete')
 def delete_user(user_id):
-    """deletes the user selected"""
+    """deletes the user selected and any posts they have"""
 
     user = User.query.get_or_404(user_id)
-    posts = user.posts
-    print(posts, '************')
+    # posts = user.posts
 
-    posts.delete()
-    # User.query.filter(User.id == user_id).delete()
-    user.query.delete()
+    Post.query.filter(Post.user_id == user.id ).delete()
+    # for post in posts:
+    #     db.session.delete(post)
 
-
+    db.session.delete(user)
     db.session.commit()
+    # User.query.filter(User.id == user_id).delete()
+
     return redirect('/users')
 
 
 """ POST routes"""
+
+
 @app.get('/users/<int:user_id>/posts/new')
 def show_add_post_form(user_id):
     """displays the add post form """
@@ -128,12 +133,15 @@ def process_add_post_form(user_id):
     title = request.form.get('title')
     content = request.form.get('content')
 
-    post = Post(title = title, content = content, user_id = user_id)
+    post = Post(title=title, content=content, user_id=user_id)
 
     db.session.add(post)
     db.session.commit()
 
     return redirect(f'/users/{user_id}')
+
+# TODO: when passing named parameters, no space around '='
+
 
 @app.get('/posts/<int:post_id>')
 def show_post(post_id):
@@ -141,7 +149,7 @@ def show_post(post_id):
     post = Post.query.get_or_404(post_id)
     user = User.query.get_or_404(post.user_id)
 
-    return render_template('post_detail.html', user = user, post = post)
+    return render_template('post_detail.html', user=user, post=post)
 
 
 @app.get('/posts/<int:post_id>/edit')
@@ -150,7 +158,8 @@ def edit_post(post_id):
 
     post = Post.query.get_or_404(post_id)
 
-    return render_template('edit_post.html', post = post)
+    return render_template('edit_post.html', post=post)
+
 
 @app.post('/posts/<int:post_id>/edit')
 def submit_edited_post(post_id):
@@ -178,9 +187,3 @@ def delete_post(post_id):
     user_id = post.user_id
 
     return redirect(f'/users/{user_id}')
-
-
-
-
-
-
