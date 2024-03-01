@@ -30,11 +30,10 @@ def home_page():
 @app.get('/users')
 def show_user():
     """show users listings."""
-    # TODO:change data name to something plural and more specific
-    # maybe order by first name, filter/order by last and first names.
-    data = User.query.all()
 
-    return render_template('users.html', users=data)
+    users = User.query.all()
+
+    return render_template('users.html', users=users)
 
 
 @app.get('/users/new')
@@ -101,7 +100,15 @@ def process_edit(user_id):
 def delete_user(user_id):
     """deletes the user selected"""
 
-    User.query.filter(User.id == user_id).delete()
+    user = User.query.get_or_404(user_id)
+    posts = user.posts
+    print(posts, '************')
+
+    posts.delete()
+    # User.query.filter(User.id == user_id).delete()
+    user.query.delete()
+
+
     db.session.commit()
     return redirect('/users')
 
@@ -114,7 +121,6 @@ def show_add_post_form(user_id):
 
     return render_template("new_post_form.html", user=user)
 
-#TODO: add new post is not redirecting, taking us to button url
 
 @app.post('/users/<int:user_id>/posts/new')
 def process_add_post_form(user_id):
@@ -135,7 +141,46 @@ def show_post(post_id):
     post = Post.query.get_or_404(post_id)
     user = User.query.get_or_404(post.user_id)
 
-    return render_template('new_post_form.html', user = user, post = post)
+    return render_template('post_detail.html', user = user, post = post)
+
+
+@app.get('/posts/<int:post_id>/edit')
+def edit_post(post_id):
+    """edit the current post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('edit_post.html', post = post)
+
+@app.post('/posts/<int:post_id>/edit')
+def submit_edited_post(post_id):
+    """submits edited post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    post.title = request.form['title']
+    post.content = request.form['content']
+
+    db.session.commit()
+
+    return redirect(f'/posts/{post_id}')
+
+
+@app.post('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+    """deletes current post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    db.session.delete(post)
+    db.session.commit()
+
+    user_id = post.user_id
+
+    return redirect(f'/users/{user_id}')
+
+
+
 
 
 

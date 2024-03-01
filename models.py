@@ -74,7 +74,7 @@ class Post(db.Model):
         db.ForeignKey('users.id'),
         nullable=False
     )
-
+    #TODO: update user(s): make sure singular
     users = db.relationship('User', backref = 'posts')
 
 

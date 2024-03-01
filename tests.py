@@ -3,7 +3,7 @@ import os
 os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 from unittest import TestCase
 from app import app, db
-from models import User
+from models import User, Post
 
 
 
@@ -34,13 +34,13 @@ class UserViewTestCase(TestCase):
         # As you add more models later in the exercise, you'll want to delete
         # all of their records before each test just as we're doing with the
         # User model below.
+        Post.query.delete()
         User.query.delete()
 
         test_user = User(
             first_name="test1_first",
             last_name="test1_last",
-            id=1,
-            image_url=None,
+            image_url=None
         )
 
         db.session.add(test_user)
@@ -51,6 +51,17 @@ class UserViewTestCase(TestCase):
         # rely on this user in our tests without needing to know the numeric
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
+
+        test_post = Post(
+            title = 'this is a cool story',
+            content = 'best story ever written',
+            user_id = self.user_id
+        )
+
+        db.session.add(test_post)
+        db.session.commit()
+
+        self.post_id = test_post.user_id
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -64,8 +75,8 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
-    # TODO: update function name
-    def test_new_user(self):
+
+    def test_redirect_user_on_edit(self):
         """test redirect, check if username edited"""
         with app.test_client() as c:
 
@@ -89,7 +100,6 @@ class UserViewTestCase(TestCase):
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
 
-    # TODO:see user's info -- first and last name
     def test_user_edit(self):
         """tests for edit info on their page"""
 
@@ -97,7 +107,8 @@ class UserViewTestCase(TestCase):
             response = client.get(f'/users/{self.user_id}/edit')
             html = response.get_data(as_text=True)
 
-            self.assertIn("<h1> Edit a user</h1>", html)
+            self.assertIn("test1_first", html)
+            self.assertIn("test1_last", html)
 
     def test_user_create(self):
         """tests for new user page"""
@@ -106,4 +117,48 @@ class UserViewTestCase(TestCase):
             response = client.get('/users/new')
             html = response.get_data(as_text=True)
 
-            self.assertIn("<h1> Create a User</h1>", html)
+            self.assertIn("Create a User", html)
+
+    def test_show_post(self):
+        """tests for showing a post"""
+
+        with app.test_client() as client:
+            response = client.get(f'/posts/{self.post_id}')
+            html = response.get_data(as_text=True)
+
+            self.assertIn("this is a cool story", html)
+            self.assertEqual(response.status_code, 200)
+
+    def test_add_post(self):
+        """tests for adding a new post"""
+
+        with app.test_client() as client:
+            response = client.get(f'/users/{self.user_id}/posts/new')
+            html = response.get_data(as_text=True)
+
+            self.assertIn("test1_first", html)
+            self.assertIn("test1_last", html)
+            self.assertEqual(response.status_code, 200)
+
+
+    def test_delete_button(self):
+        """tests for delete button"""
+
+        with app.test_client() as client:
+            response = client.post(f'/posts/{self.post_id}/delete',
+                                   follow_redirects=True)
+            html = response.get_data(as_text=True)
+
+            self.assertNotIn("this is a cool story", html)
+            self.assertEqual(response.status_code, 200)
+
+
+
+
+
+
+
+
+
+
+
